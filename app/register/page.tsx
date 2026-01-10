@@ -1,31 +1,36 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import Link from "next/link";
 import { useState } from "react";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
 
-  async function login(formData: FormData) {
-    const res = await signIn("credentials", {
-      email: formData.get("email"),
-      password: formData.get("password"),
-      redirect: false,
+  async function register(formData: FormData) {
+    const name = formData.get("name");
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    const res = await fetch("/api/register", {
+      method: "POST",
+      body: JSON.stringify({ name, email, password }),
+      headers: { "Content-Type": "application/json" },
     });
 
-    if (res?.error) {
-      setError("Invalid email or password");
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.error || "Something went wrong");
     } else {
-      window.location.href = "/";
+      // Success: Redirect to login
+      window.location.href = "/login";
     }
   }
 
   return (
     <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded-lg shadow">
-      <h1 className="text-2xl font-semibold mb-6 text-center">Login</h1>
+      <h1 className="text-2xl font-semibold mb-6 text-center">Create Account</h1>
 
-      <form action={login} className="flex flex-col gap-4">
+      <form action={register} className="flex flex-col gap-4">
         {error && (
           <p className="text-sm text-red-600 text-center">{error}</p>
         )}
@@ -56,19 +61,16 @@ export default function LoginPage() {
                      hover:bg-gray-900 transition-colors
                      focus:outline-none focus:ring-2 focus:ring-gray-800"
         >
-          Sign In
+          Register
         </button>
       </form>
-
-      <div className="mt-6 text-center text-sm text-gray-600">
-        Don't have an account?{" "}
-        <Link 
-          href="/register" 
-          className="font-semibold text-gray-900 hover:underline transition-all"
-        >
-          Create account
-        </Link>
-      </div>
+      
+      <p className="mt-4 text-center text-sm text-gray-600">
+        Already have an account?{" "}
+        <a href="/login" className="text-gray-900 font-semibold hover:underline">
+          Sign In
+        </a>
+      </p>
     </div>
   );
 }

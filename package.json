@@ -2,6 +2,7 @@
   "name": "github-activity-dashboard",
   "version": "0.1.0",
   "private": true,
+  
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,14 +10,22 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@prisma/adapter-mariadb": "^7.2.0",
+    "@prisma/adapter-planetscale": "^7.2.0",
+    "@prisma/client": "^7.2.0",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
     "next": "16.1.0",
     "next-auth": "^5.0.0-beta.30",
     "octokit": "^5.0.5",
+    "prisma": "^7.2.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "undici": "^7.18.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/bcrypt": "^6.0.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

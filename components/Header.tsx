@@ -1,35 +1,34 @@
-import { auth } from "@/lib/auth";
-import { signIn, signOut } from "@/lib/auth";
+"use client";
 
-export default async function Header() {
-  const session = await auth();
+import { useSession } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
+import { usePathname, useSearchParams } from "next/navigation";
+
+export default function Header() {
+  const { data: session } = useSession();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // full URL path including query
+  const fullPath = `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`;
 
   return (
     <header className="w-full flex items-center px-6 py-4 border-b">
-
       <div className="ml-auto">
         {session ? (
-          <form
-            action={async () => {
-              "use server";
-              await signOut();
-            }}
+          <button
+            onClick={() => signOut({ callbackUrl: fullPath })}
+            className="px-4 py-2 bg-gray-800 text-white rounded"
           >
-            <button className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 transition">
-              Log out
-            </button>
-          </form>
+            Log out
+          </button>
         ) : (
-          <form
-            action={async () => {
-              "use server";
-              await signIn(undefined, { redirectTo: "/login" });
-            }}
+          <button
+            onClick={() => signIn(undefined, { callbackUrl: fullPath })}
+            className="px-4 py-2 bg-gray-800 text-white rounded"
           >
-            <button className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900 transition">
-              Log in
-            </button>
-          </form>
+            Log in
+          </button>
         )}
       </div>
     </header>
